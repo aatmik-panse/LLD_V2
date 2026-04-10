@@ -2,22 +2,20 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=== Export Demo ===");
 
-        ExportRequest req = new ExportRequest("Weekly Report", SampleData.longBody());
+        ExportRequest reqReport = new ExportRequest("Weekly Report", SampleData.longBody());
         Exporter pdf = new PdfExporter();
         Exporter csv = new CsvExporter();
         Exporter json = new JsonExporter();
 
-        System.out.println("PDF: " + safe(pdf, req));
-        System.out.println("CSV: " + safe(csv, req));
-        System.out.println("JSON: " + safe(json, req));
+        System.out.println("PDF: " + describe(pdf.export(reqReport)));
+        System.out.println("CSV: " + describe(csv.export(reqReport)));
+        System.out.println("JSON: " + describe(json.export(reqReport)));
     }
 
-    private static String safe(Exporter e, ExportRequest r) {
-        try {
-            ExportResult out = e.export(r);
-            return "OK bytes=" + out.bytes.length;
-        } catch (RuntimeException ex) {
-            return "ERROR: " + ex.getMessage();
+    private static String describe(ExportResult result) {
+        if (!result.success) {
+            return "ERROR: " + result.error;
         }
+        return "OK bytes=" + result.bytes.length;
     }
 }
