@@ -12,24 +12,40 @@ public class EligibilityEngine {
         store.save(s.rollNo, r.status);
     }
 
-    public EligibilityEngineResult evaluate(StudentProfile s) {
+    public EligibilityEngineResult evaluate(StudentProfile student) {
         List<String> reasons = new ArrayList<>();
         String status = "ELIGIBLE";
 
         // OCP violation: long chain for each rule
-        if (s.disciplinaryFlag != LegacyFlags.NONE) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("disciplinary flag present");
-        } else if (s.cgr < 8.0) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("CGR below 8.0");
-        } else if (s.attendancePct < 75) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("attendance below 75");
-        } else if (s.earnedCredits < 20) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("credits below 20");
+        // if (s.disciplinaryFlag != LegacyFlags.NONE) {
+        //     status = "NOT_ELIGIBLE";
+        //     reasons.add("disciplinary flag present");
+        // } else if (s.cgr < 8.0) {
+        //     status = "NOT_ELIGIBLE";
+        //     reasons.add("CGR below 8.0");
+        // } else if (s.attendancePct < 75) {
+        //     status = "NOT_ELIGIBLE";
+        //     reasons.add("attendance below 75");
+        // } else if (s.earnedCredits < 20) {
+        //     status = "NOT_ELIGIBLE";
+        //     reasons.add("credits below 20");
+        // }
+
+        List<IEligibilityRule> rules = new ArrayList<>();
+        rules.add(new DisciplinaryRules());
+        rules.add(new CGRules());
+        rules.add(new AttendanceRules());
+        rules.add(new CreditsRules());
+
+        for (IEligibilityRule rule : rules) {
+            String result = rule.check(student);
+            if (result.equals("NOT_ELIGIBLE")) {
+                status = "NOT_ELIGIBLE";
+                reasons.add(rule.reason());
+            }
         }
+
+
 
         return new EligibilityEngineResult(status, reasons);
     }
