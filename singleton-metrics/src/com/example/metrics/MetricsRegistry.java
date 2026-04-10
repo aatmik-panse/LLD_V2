@@ -29,8 +29,10 @@ public class MetricsRegistry implements Serializable {
     private final Map<String, Long> counters = new HashMap<>();
 
     private MetricsRegistry() {
-        super();
+    if (INSTANCE != null) {
+        throw new IllegalStateException("Singleton already constructed, use getInstance()");
     }
+}
 
     public static MetricsRegistry getInstance() {
         if (INSTANCE ==null){
