@@ -18,8 +18,11 @@ Placement eligibility depends on multiple rules: CGR threshold, attendance perce
 
 ## 4. Your task
 Checkpoint A: Run and capture output.
+
 Checkpoint B: Move each rule to its own unit (class) behind a shared abstraction.
+
 Checkpoint C: Make it possible to add a new rule without editing the main evaluation logic.
+
 Checkpoint D: Keep report text identical.
 
 ## 5. Constraints
